@@ -1,84 +1,52 @@
+import { CREATE_TODO, UPDATE_TODO, REMOVE_TODO, FETCH_TODOS } from './todoMutation'
+
 export default {
+    namespaced: true,
     actions: {
-        fetchTodos({ commit }, limit = 3) {
-            const url = 'https://jsonplaceholder.typicode.com/todos?_limit=' + limit;
-            const myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json; charset=UTF-8");
-
-            const requestOptions = {
-                method: 'GET',
-                headers: myHeaders,
-                redirect: 'follow'
-            };
-
-            fetch(url, requestOptions)
-                .then(response => response.json())
-                .then(result => {
-                    commit('updateTodos', {
-                        todos: result
-                    })
-                })
-                .catch(error => console.log('error', error));
+        fetchTodos({ commit }) {
+            commit(FETCH_TODOS);
         },
-
-        createTodo({ commit }, { title, body, userId }) {
-            fetch('https://jsonplaceholder.typicode.com/posts', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        title,
-                        body,
-                        userId,
-                    }),
-                    headers: {
-                        'Content-type': 'application/json; charset=UTF-8',
-                    },
-                })
-                .then((response) => response.json())
-                .then(result => {
-                    //Меняю id, потому что использую fake api,
-                    //который постоянно возвращает id: 101
-                    result.id = Date.now();
-                    commit('addTodo', {
-                        todo: result
-                    })
-                })
-                .catch(error => console.log('error', error));
+        createTodo({ commit }, todo) {
+            commit(CREATE_TODO, {
+                todo: todo
+            });
         },
-
         updateTodo({ commit }, todo) {
-            fetch('https://jsonplaceholder.typicode.com/posts/' + todo.id, {
-                    method: 'PATCH',
-                    body: JSON.stringify({
-                        completed: 'true',
-                    }),
-                    headers: {
-                        'Content-type': 'application/json; charset=UTF-8',
-                    },
-                })
-                .then((response) => response.json())
-                .then((result) => commit('updateTodo', {
-                    todo: result
-                }));
-
+            commit(UPDATE_TODO, {
+                todo: todo
+            });
         },
+        removeTodo({ commit }, id) {
+            commit(REMOVE_TODO, {
+                id: id
+            });
+        }
     },
     mutations: {
-        updateTodos(state, payload) {
-            state.todos = payload.todos;
-        },
-        addTodo(state, payload) {
+        [CREATE_TODO](state, payload) {
             state.todos.push(payload.todo);
+            localStorage.setItem('todos', JSON.stringify(state.todos));
         },
-        updateTodo(state, payload) {
-            const todo = state.todos.find((todo) => todo.id === payload.todo.id)
-            todo.completed = 'true'
-        }
+        [UPDATE_TODO](state, payload) {
+            let todo = state.todos.filter(todo =>
+                todo.id === payload.todo.id);
+            todo = payload.todo;
+            localStorage.setItem('todos', JSON.stringify(state.todos));
+        },
+        [REMOVE_TODO](state, payload) {
+            state.todos = state.todos.filter(todo => todo.id !== payload.id);
+            localStorage.setItem('todos', JSON.stringify(state.todos));
+        },
+        [FETCH_TODOS](state) {
+            state.todos = JSON.parse(localStorage.getItem("todos")) || [];
+        },
+
     },
     state: {
         todos: []
     },
     getters: {
-        getAllTodo(state) {
+        getTodos(state) {
             return state.todos;
         },
         doneTodos(state) {

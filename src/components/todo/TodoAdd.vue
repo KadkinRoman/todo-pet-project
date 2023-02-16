@@ -4,45 +4,51 @@
     <div class="todo-add__item">
       <TodoAddItem />
     </div>
-
-    <div class="todo-add__task">
+    <div v-if='!notDoneTodos.length'>
+      <h1>На сегодня больше нет задач. Отдохните!!!</h1>
+    </div>
+    <transition-group mode="out-in" name="fade" tag="div" class="todo-add__task task-not-completed">
       <TodoTaskItem v-for="todo in notDoneTodos" :key="todo.id" :data="todo">
         <template #item>
-          <div class="card__button">
-            <AppButton @click="update(todo)">X</AppButton>
+          <div class="todo-add__control-element">
+            <AppCheckbox v-model="todo.completed" @input="updateTodo(todo)" />
           </div>
         </template>
       </TodoTaskItem>
-    </div>
-    <div v-if = '!notDoneTodos.length'> 
-      <h1>На сегодня больше нет задач. Отдохните!!!</h1>
-    </div>
+    </transition-group>
+    <hr>
+    <transition-group mode="out-in" name="fade" tag="div" class="todo-add__task task-completed">
+      <TodoTaskItem v-for="todo in doneTodos" :key="todo.id" :data="todo">
+        <template #item>
+          <div class="todo-add__control-element">
+            <AppCheckbox v-model="todo.completed" @input="updateTodo(todo)" />
+          </div>
+        </template>
+      </TodoTaskItem>
+    </transition-group>
   </div>
 </template>
 
 <script>
 import TodoAddItem from './TodoAddItem.vue';
 import TodoTaskItem from './TodoTaskItem.vue';
-import AppButton from '../AppButton.vue';
+import AppCheckbox from '../AppCheckbox.vue';
 import { mapGetters, mapActions } from 'vuex';
 
 
 export default {
-
   components: {
     TodoAddItem,
     TodoTaskItem,
-    AppButton
+    AppCheckbox
   },
   methods: {
-    ...mapActions(['updateTodo']),
-    update(todo){
-      this.updateTodo(todo);
-    }
+    ...mapActions('todo', ['createTodo', 'updateTodo']),
   },
   computed: {
-    ...mapGetters({
-      notDoneTodos: 'notDoneTodos'
+    ...mapGetters('todo', {
+      notDoneTodos: 'notDoneTodos',
+      doneTodos: 'doneTodos'
     })
   }
 }
@@ -57,10 +63,33 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  padding: 5px 0;
+  transition: all .3s ease;
 }
 
-.card__button {
+.todo-add__control-element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 32px;
   width: 32px;
+}
+
+/* Анимация */
+.fade-item {
+  transition: all 1s;
+  display: inline-block;
+  margin-right: 10px;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.fade-leave-active {
+  position: absolute;
+}
+
+.fade-move {
+  transition: transform 1s;
 }
 </style>

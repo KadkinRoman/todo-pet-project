@@ -3,7 +3,7 @@
     <div class="add-item__group">
       <AppInput v-model="task" type="text" />
     </div>
-    <div class="add-item__button">
+    <div class="todo-add__control-element">
       <AppButton class="button" @click="create">
         <template #icon>
           <IconPlus />
@@ -17,7 +17,7 @@
 import AppInput from '@/components/AppInput.vue';
 import AppButton from '@/components/AppButton.vue';
 import IconPlus from '@/components/icons/IconPlus.vue';
-import { mapMutations, mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'TodoAddItem',
@@ -32,12 +32,16 @@ export default {
     IconPlus
   },
   methods: {
-    ...mapActions(['createTodo']),
+    ...mapActions('todo', ['createTodo']),
     create() {
+      if (!this.task.length) {
+        return;
+      }
       const todo = {
-        "userId": 1,
-        "title": this.task,
-        "completed": false
+        id: Date.now(),
+        date: new Date(),
+        title: this.task,
+        completed: false
       }
 
       this.createTodo(todo);
@@ -52,6 +56,7 @@ export default {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 @media (min-width: 576px) {
@@ -67,7 +72,7 @@ export default {
   gap: 6px;
 }
 
-.add-item__button {
+.todo-add__control-element {
   flex: 1 1 70px;
   min-width: 70px;
 }

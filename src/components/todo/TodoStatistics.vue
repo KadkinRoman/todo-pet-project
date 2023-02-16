@@ -10,7 +10,7 @@
 import { mapGetters } from 'vuex';
 export default {
   computed: {
-    ...mapGetters(['doneTodosCount', 'notDoneTodosCount'])
+    ...mapGetters('todo', ['doneTodosCount', 'notDoneTodosCount'])
   }
 }
 </script>

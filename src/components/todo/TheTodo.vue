@@ -30,11 +30,11 @@
 <script>
 import { mapActions } from 'vuex';
 export default {
-  async mounted() {
-    this.fetchTodos(5);
+  mounted() {
+    this.fetchTodos();
   },
   methods: {
-    ...mapActions(['fetchTodos']),
+    ...mapActions('todo', ['fetchTodos'])
   },
   computed: {
     isTodo() {
