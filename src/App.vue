@@ -17,8 +17,8 @@ import HelloWorld from "./components/HelloWorld.vue";
         <HelloWorld msg="You did it!" />
 
         <nav>
-          <router-link to="/">Home</router-link>
-          <router-link to="/todo">Todo</router-link>
+          <router-link :to="{ name: 'home' }">Home</router-link>
+          <router-link :to="{ name: 'todo' }">Todo</router-link>
         </nav>
       </div>
     </header>

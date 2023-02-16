@@ -3,8 +3,8 @@
     <div class="todo__container">
       <h2>Todo</h2>
       <nav class="nav">
-        <router-link class="link" to="/todo/add">Добавить задачу</router-link>
-        <router-link class="link" to="/todo/statistics">Статистика</router-link>
+        <router-link class="link" :to="{ name: 'add' }">Добавить задачу</router-link>
+        <router-link class="link" :to="{ name: 'statistics' }">Статистика</router-link>
       </nav>
       <hr/>
 
