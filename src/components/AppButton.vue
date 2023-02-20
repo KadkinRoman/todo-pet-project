@@ -10,9 +10,7 @@
 </template>
 
 <script>
-export default {
-  
-}
+export default {};
 </script>
 
 <style scoped>
@@ -22,7 +20,7 @@ export default {
   border-radius: 8px;
   color: #f0e3ca;
   cursor: pointer;
-  transition: opacity .3s ease;;
+  transition: opacity 0.3s ease;
   padding: 8px;
   height: 100%;
   width: 100%;
@@ -31,8 +29,7 @@ export default {
   align-items: center;
 }
 
-
 .button:hover {
-  opacity: .8;
+  opacity: 0.8;
 }
 </style>

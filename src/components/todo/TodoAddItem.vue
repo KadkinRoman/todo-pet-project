@@ -14,25 +14,25 @@
 </template>
 
 <script>
-import AppInput from '@/components/AppInput.vue';
-import AppButton from '@/components/AppButton.vue';
-import IconPlus from '@/components/icons/IconPlus.vue';
-import { mapActions } from 'vuex';
+import AppInput from "@/components/AppInput.vue";
+import AppButton from "@/components/AppButton.vue";
+import IconPlus from "@/components/icons/IconPlus.vue";
+import { mapActions } from "vuex";
 
 export default {
-  name: 'TodoAddItem',
-  data() {
-    return {
-      task: ''
-    }
-  },
+  name: "TodoAddItem",
   components: {
     AppInput,
     AppButton,
-    IconPlus
+    IconPlus,
+  },
+  data() {
+    return {
+      task: "",
+    };
   },
   methods: {
-    ...mapActions('todo', ['createTodo']),
+    ...mapActions("todo", ["createTodo"]),
     create() {
       if (!this.task.length) {
         return;
@@ -41,14 +41,14 @@ export default {
         id: Date.now(),
         date: new Date(),
         title: this.task,
-        completed: false
-      }
+        completed: false,
+      };
 
       this.createTodo(todo);
-      this.task = '';
-    }
-  }
-}
+      this.task = "";
+    },
+  },
+};
 </script>
 
 <style scoped>

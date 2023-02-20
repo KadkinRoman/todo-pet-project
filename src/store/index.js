@@ -1,13 +1,14 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import todo from './modules/todo';
+import Vue from "vue";
+import Vuex from "vuex";
+import todo from "./modules/todo";
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
-modules: {
-  todo
-}
+  strict: true,
+  modules: {
+    todo,
+  },
 });
 
 export default store;

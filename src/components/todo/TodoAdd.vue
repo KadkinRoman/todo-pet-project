@@ -1,57 +1,45 @@
 <template>
   <div class="todo-add">
-
     <div class="todo-add__item">
       <TodoAddItem />
     </div>
-    <div v-if='!notDoneTodos.length'>
+    <div v-if="!notDoneTodos.length">
       <h1>На сегодня больше нет задач. Отдохните!!!</h1>
     </div>
-    <transition-group mode="out-in" name="fade" tag="div" class="todo-add__task task-not-completed">
-      <TodoTaskItem v-for="todo in notDoneTodos" :key="todo.id" :data="todo">
-        <template #item>
-          <div class="todo-add__control-element">
-            <AppCheckbox v-model="todo.completed" @input="updateTodo(todo)" />
-          </div>
-        </template>
-      </TodoTaskItem>
+    <transition-group
+      mode="out-in"
+      name="fade"
+      tag="div"
+      class="todo-add__task task-not-completed"
+    >
+      <TodoTaskItem v-for="todo in notDoneTodos" :key="todo.id" :data="todo" />
     </transition-group>
-    <hr>
-    <transition-group mode="out-in" name="fade" tag="div" class="todo-add__task task-completed">
-      <TodoTaskItem v-for="todo in doneTodos" :key="todo.id" :data="todo">
-        <template #item>
-          <div class="todo-add__control-element">
-            <AppCheckbox v-model="todo.completed" @input="updateTodo(todo)" />
-          </div>
-        </template>
-      </TodoTaskItem>
+    <hr />
+    <transition-group
+      mode="out-in"
+      name="fade"
+      tag="div"
+      class="todo-add__task task-completed"
+    >
+      <TodoTaskItem v-for="todo in doneTodos" :key="todo.id" :data="todo" />
     </transition-group>
   </div>
 </template>
 
 <script>
-import TodoAddItem from './TodoAddItem.vue';
-import TodoTaskItem from './TodoTaskItem.vue';
-import AppCheckbox from '../AppCheckbox.vue';
-import { mapGetters, mapActions } from 'vuex';
-
+import TodoAddItem from "./TodoAddItem.vue";
+import TodoTaskItem from "./TodoTaskItem.vue";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
     TodoAddItem,
     TodoTaskItem,
-    AppCheckbox
-  },
-  methods: {
-    ...mapActions('todo', ['createTodo', 'updateTodo']),
   },
   computed: {
-    ...mapGetters('todo', {
-      notDoneTodos: 'notDoneTodos',
-      doneTodos: 'doneTodos'
-    })
-  }
-}
+    ...mapGetters("todo", ["notDoneTodos", "doneTodos"]),
+  },
+};
 </script>
 
 <style scoped>
@@ -64,15 +52,7 @@ export default {
   flex-direction: column;
   gap: 15px;
   padding: 5px 0;
-  transition: all .3s ease;
-}
-
-.todo-add__control-element {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 32px;
-  width: 32px;
+  transition: all 0.3s ease;
 }
 
 /* Анимация */
@@ -81,10 +61,13 @@ export default {
   display: inline-block;
   margin-right: 10px;
 }
-.fade-enter, .fade-leave-to {
+
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
   transform: translateY(30px);
 }
+
 .fade-leave-active {
   position: absolute;
 }

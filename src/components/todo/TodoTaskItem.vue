@@ -6,27 +6,31 @@
           <div class="col">
             <div class="card__content">
               <h3 class="card__title">
-                <slot name="title">
-                  {{ data.title }}
-                </slot>
+                {{ data.title }}
               </h3>
             </div>
           </div>
           <div class="col">
-            <slot name="item">
-            </slot>
+            <div class="card__checkbox">
+              <AppCheckbox
+                :value="data.completed"
+                @input="updateCompletedStatus"
+              />
+            </div>
           </div>
         </div>
       </div>
-      <div class="control" :class="{'showControl': isVisible}">
-        <TodoTaskControlItem @remove="removeTodo(data.id)" @edit="changeEditStatus" />
+      <div class="control" :class="{ showControl: isVisible }">
+        <TodoTaskControlItem
+          @remove="removeTodo(data.id)"
+          @edit="changeEditStatus"
+        />
       </div>
     </template>
 
-
     <div v-if="isEdit" class="card-edit">
       <div class="card-edit__group">
-        <AppInput v-model="data.title" type="text" />
+        <AppInput type="text" :value="data.title" @input="updateTitle" />
       </div>
       <div class="card-edit__control-element">
         <AppButton class="button" @click="confirmChanges">
@@ -40,46 +44,55 @@
 </template>
 
 <script>
-import TodoTaskControlItem from './TodoTaskControlItem.vue';
-import AppInput from '../AppInput.vue';
-import AppButton from '../AppButton.vue';
-import IconEdit from '../icons/IconEdit.vue';
-import { mapActions } from 'vuex';
+import TodoTaskControlItem from "./TodoTaskControlItem.vue";
+import AppInput from "../AppInput.vue";
+import AppButton from "../AppButton.vue";
+import AppCheckbox from "../AppCheckbox.vue";
+import IconEdit from "../icons/IconEdit.vue";
+import { mapActions } from "vuex";
 export default {
   components: {
     TodoTaskControlItem,
     AppInput,
     AppButton,
-    IconEdit
+    AppCheckbox,
+    IconEdit,
   },
   props: {
     data: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       isEdit: false,
-      isVisible: false
-    }
+      isVisible: false,
+      todo: { ...this.data },
+    };
   },
   methods: {
-    ...mapActions('todo', ['removeTodo', 'updateTodo']),
+    ...mapActions("todo", ["removeTodo", "updateTodo"]),
     changeEditStatus() {
       this.isEdit = true;
     },
     confirmChanges() {
-      console.log('confirm');
-      this.updateTodo(this.data);
+      this.updateTodo(this.todo);
       this.isEdit = false;
       this.isVisible = false;
     },
     changeControlVisibleStatus() {
       this.isVisible = !this.isVisible;
-    }
-  }
-}
+    },
+    updateTitle(title) {
+      this.todo.title = title;
+    },
+    updateCompletedStatus(completedStatus) {
+      this.todo.completed = completedStatus;
+      this.updateTodo(this.todo);
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -106,6 +119,15 @@ export default {
   line-height: 30px;
   color: #f0e3ca;
 }
+
+.card__checkbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 32px;
+  width: 32px;
+}
+
 /* control */
 .control {
   display: none;

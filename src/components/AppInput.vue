@@ -1,5 +1,10 @@
 <template>
-  <input class="input" :type="type" :value="value" @input="$emit('input', $event.target.value)">
+  <input
+    class="input"
+    :type="type"
+    :value="value"
+    @input="$emit('input', $event.target.value)"
+  />
 </template>
 
 <script>
@@ -7,14 +12,14 @@ export default {
   props: {
     value: {
       type: String,
-      required: true
+      required: true,
     },
     type: {
       type: String,
-      required: true
-    }
-  }
-}
+      required: true,
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -24,7 +29,7 @@ export default {
   border-radius: 4px;
   color: #f0e3ca;
   cursor: text;
-  transition: opacity .3s ease;
+  transition: opacity 0.3s ease;
   padding: 8px 16px;
   width: 100%;
   height: 100%;
