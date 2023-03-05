@@ -28,8 +28,11 @@ export default {
     this.createId();
   },
   methods: {
+    getRandomNumber() {
+      return Math.floor(Math.random() * Date.now());
+    },
     createId() {
-      this.id = Date.now().toString();
+      this.id = this.getRandomNumber().toString();
     },
   },
 };

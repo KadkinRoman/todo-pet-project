@@ -4,6 +4,7 @@
     :type="type"
     :value="value"
     @input="$emit('input', $event.target.value)"
+    @click.stop=""
   />
 </template>
 

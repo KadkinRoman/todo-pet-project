@@ -3,8 +3,17 @@
     <div class="todo-add__item">
       <TodoAddItem />
     </div>
-    <div v-if="!notDoneTodos.length">
+    <template v-if="!notDoneTodos.length">
       <h1>На сегодня больше нет задач. Отдохните!!!</h1>
+    </template>
+    <AppButton @click="completeAllTasks">Выполнить все задачи</AppButton>
+    <hr />
+    <div class="sort">
+      <p style="text-align: left">Сортировать:</p>
+      <AppButton @click="updateSortKey('BY_DATE')"
+        >По дате добавления</AppButton
+      >
+      <AppButton @click="updateSortKey('BY_ALPHABET')">По алфавиту</AppButton>
     </div>
     <transition-group
       mode="out-in"
@@ -12,7 +21,11 @@
       tag="div"
       class="todo-add__task task-not-completed"
     >
-      <TodoTaskItem v-for="todo in notDoneTodos" :key="todo.id" :data="todo" />
+      <TodoTaskItem
+        v-for="todo in notDoneTodos(sortKey)"
+        :key="todo.id"
+        :task-data="todo"
+      />
     </transition-group>
     <hr />
     <transition-group
@@ -21,7 +34,11 @@
       tag="div"
       class="todo-add__task task-completed"
     >
-      <TodoTaskItem v-for="todo in doneTodos" :key="todo.id" :data="todo" />
+      <TodoTaskItem
+        v-for="todo in doneTodos(sortKey)"
+        :key="todo.id"
+        :task-data="todo"
+      />
     </transition-group>
   </div>
 </template>
@@ -29,15 +46,30 @@
 <script>
 import TodoAddItem from "./TodoAddItem.vue";
 import TodoTaskItem from "./TodoTaskItem.vue";
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
+import AppButton from "../AppButton.vue";
 
 export default {
   components: {
     TodoAddItem,
     TodoTaskItem,
+    AppButton,
+  },
+  data() {
+    return {
+      todosDone: [],
+      todosNotDone: [],
+      sortKey: "",
+    };
   },
   computed: {
     ...mapGetters("todo", ["notDoneTodos", "doneTodos"]),
+  },
+  methods: {
+    ...mapActions("todo", ["completeAllTasks"]),
+    updateSortKey(key = "DEFAULT") {
+      this.sortKey = key;
+    },
   },
 };
 </script>
