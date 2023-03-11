@@ -12,52 +12,57 @@ import Vue from "vue";
 export default {
   namespaced: true,
   actions: {
+    saveTodoToLocalStorage({ state }) {
+      localStorage.setItem("todos", JSON.stringify(state.todos));
+    },
     fetchTodos({ commit }) {
       const todos = JSON.parse(localStorage.getItem("todos")) || [];
       commit(FETCH_TODOS, {
         todos: todos,
       });
     },
-    createTodo({ commit, state }, todo) {
+    createTodo({ dispatch, commit }, todo) {
       commit(CREATE_TODO, {
         todo: todo,
       });
-      localStorage.setItem("todos", JSON.stringify(state.todos));
-    },
-    updateTodo({ commit, state }, todo) {
-      const TODO_INDEX = state.todos.findIndex((item) => item.id === todo.id);
 
+      dispatch("saveTodoToLocalStorage");
+    },
+    updateTodo({ dispatch, commit }, todo) {
       commit(UPDATE_TODO, {
         newTodo: { ...todo },
       });
 
-      if (state.todos[TODO_INDEX].child) {
-        state.todos[TODO_INDEX].child.forEach((item) => {
-          const childTodo = { ...item };
-
-          childTodo.completed = todo.completed;
-
-          commit(UPDATE_CHILD_TODO, {
-            newTodo: childTodo,
-          });
-        });
-      }
-
-      localStorage.setItem("todos", JSON.stringify(state.todos));
+      dispatch("saveTodoToLocalStorage");
     },
-    updateTodoCompletedStatus({ dispatch, state }, id) {
+    updateTodoCompletedStatus({ commit, dispatch, state }, id) {
       const TODO_INDEX = state.todos.findIndex((todo) => todo.id === id);
 
       const todo = { ...state.todos[TODO_INDEX] };
       todo.completed = !todo.completed;
 
       dispatch("updateTodo", todo);
+
+      if (state.todos[TODO_INDEX].child) {
+        state.todos[TODO_INDEX].child.forEach((item) => {
+          const childTodo = { ...item };
+          if (childTodo.completed !== todo.completed) {
+            childTodo.completed = todo.completed;
+
+            commit(UPDATE_CHILD_TODO, {
+              newTodo: childTodo,
+            });
+          }
+        });
+      }
+
+      dispatch("saveTodoToLocalStorage");
     },
-    removeTodo({ commit, state }, id) {
+    removeTodo({ dispatch, commit }, id) {
       commit(REMOVE_TODO, {
         id: id,
       });
-      localStorage.setItem("todos", JSON.stringify(state.todos));
+      dispatch("saveTodoToLocalStorage");
     },
     createChildTodo({ dispatch, commit, state }, childTodo) {
       const TODO_INDEX = state.todos.findIndex(
@@ -72,15 +77,16 @@ export default {
         dispatch("updateTodoCompletedStatus", state.todos[TODO_INDEX].id);
       }
 
-      localStorage.setItem("todos", JSON.stringify(state.todos));
+      dispatch("saveTodoToLocalStorage");
     },
-    removeChildTodo({ commit, state }, todo) {
+    removeChildTodo({ dispatch, commit }, todo) {
       commit(REMOVE_CHILD_TODO, {
         oldTodo: todo,
       });
-      localStorage.setItem("todos", JSON.stringify(state.todos));
+      dispatch("saveTodoToLocalStorage");
     },
     updateChildTodo({ dispatch, commit, state }, todo) {
+      console.log("updateChildTodo");
       const TODO_INDEX = state.todos.findIndex(
         (item) => item.id === todo.parentId
       );
@@ -96,7 +102,7 @@ export default {
         dispatch("updateTodoCompletedStatus", state.todos[TODO_INDEX].id);
       }
 
-      localStorage.setItem("todos", JSON.stringify(state.todos));
+      dispatch("saveTodoToLocalStorage");
     },
     completeAllTasks({ dispatch, getters }) {
       const notDoneTodos = getters.notDoneTodos();
@@ -104,7 +110,6 @@ export default {
         return;
       }
 
-      console.log(notDoneTodos);
       const notDoneTodosId = notDoneTodos.map((todo) => todo.id);
       notDoneTodosId.forEach((id) => {
         dispatch("updateTodoCompletedStatus", id);
@@ -151,6 +156,7 @@ export default {
       state.todos[TODO_INDEX].child.splice(CHILD_TODO_INDEX, 1);
     },
     [UPDATE_CHILD_TODO](state, { newTodo }) {
+      console.log("UPDATE_CHILD_TODO");
       const TODO_INDEX = state.todos.findIndex(
         (todo) => todo.id === newTodo.parentId
       );
@@ -179,10 +185,10 @@ export default {
         const todos = getters.sortedTodos(key);
         return todos.filter((todo) => !todo.completed);
       },
-    doneTodosCount(getters) {
-      return getters.doneTodos.length;
+    doneTodosCount(state, getters) {
+      return getters.doneTodos().length;
     },
-    notDoneTodosCount(getters) {
+    notDoneTodosCount(state, getters) {
       return getters.notDoneTodos().length;
     },
     allChildTodoDone: (state) => (parentId) => {
@@ -190,16 +196,11 @@ export default {
 
       //Если находим любой объект с невыполненной задчей возвращаем false
       //чтобы знать, что не все задачи выполнены
-      return state.todos[TODO_INDEX].child.find(
-        (todo) => todo.completed === false
-      )
-        ? false
-        : true;
+      return !state.todos[TODO_INDEX].child.some((todo) => !todo.completed);
     },
     sortedTodos:
       (state) =>
       (key = "DEFAULT") => {
-        console.log(key);
         const todos = [...state.todos];
         switch (key) {
           case "BY_ALPHABET":

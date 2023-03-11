@@ -1,7 +1,7 @@
 <template>
   <div class="control-item">
     <template v-if="taskData.parentId === undefined">
-      <AppInput v-model="childTodoText" :value="childTodoText" type="text" />
+      <AppInput v-model="childTodoText" type="text" />
       <AppButton class="button" @click="add"> + </AppButton>
     </template>
     <AppButton class="button" @click="$emit('edit')">

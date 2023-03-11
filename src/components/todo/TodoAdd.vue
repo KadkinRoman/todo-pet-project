@@ -3,7 +3,7 @@
     <div class="todo-add__item">
       <TodoAddItem />
     </div>
-    <template v-if="!notDoneTodos.length">
+    <template v-if="!notDoneTodosCount">
       <h1>На сегодня больше нет задач. Отдохните!!!</h1>
     </template>
     <AppButton @click="completeAllTasks">Выполнить все задачи</AppButton>
@@ -63,7 +63,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("todo", ["notDoneTodos", "doneTodos"]),
+    ...mapGetters("todo", ["notDoneTodos", "doneTodos", "notDoneTodosCount"]),
   },
   methods: {
     ...mapActions("todo", ["completeAllTasks"]),

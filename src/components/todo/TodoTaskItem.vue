@@ -129,7 +129,7 @@ export default {
           this.updateTodoCompletedStatus(this.todo.parentId);
         }
       } else {
-        this.updateTodo(this.todo);
+        this.updateTodoCompletedStatus(this.todo.id);
       }
     },
     remove() {
