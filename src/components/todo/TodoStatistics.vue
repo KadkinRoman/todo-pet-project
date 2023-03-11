@@ -1,16 +1,16 @@
 <template>
   <div>
     <h1>Выполненно задач: {{ doneTodosCount }}</h1>
-    <hr>
+    <hr />
     <h1>Не выполненно задач: {{ notDoneTodosCount }}</h1>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 export default {
   computed: {
-    ...mapGetters(['doneTodosCount', 'notDoneTodosCount'])
-  }
-}
+    ...mapGetters("todo", ["doneTodosCount", "notDoneTodosCount"]),
+  },
+};
 </script>

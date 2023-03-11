@@ -2,9 +2,9 @@
 import TheWelcome from "@/components/TheWelcome.vue";
 export default {
   components: {
-    TheWelcome
-  }
-}
+    TheWelcome,
+  },
+};
 </script>
 
 <template>

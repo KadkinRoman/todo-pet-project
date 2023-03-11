@@ -21,15 +21,15 @@ const router = new VueRouter({
       children: [
         {
           path: "/todo/statistics",
-          name: 'statistics',
+          name: "statistics",
           component: () => import("../views/TodoStatisticsView.vue"),
         },
         {
           path: "/todo/add",
-          name: 'add',
+          name: "add",
           component: () => import("../views/TodoAddView.vue"),
         },
-      ]
+      ],
     },
   ],
 });
